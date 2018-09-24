@@ -55,6 +55,7 @@ public class MainApplication {
             @Override
             public void onPublish(UTF8Buffer utf8Buffer, Buffer buffer, Runnable runnable) {
                 runnable.run();
+                processCommand(buffer.ascii().toString());
             }
 
             @Override
@@ -62,6 +63,20 @@ public class MainApplication {
                 System.out.println("MQQT> Failure on socket...");
             }
         });
+    }
+
+    private static void processCommand(String command) {
+        switch (command) {
+            case "command_is_raspberry_alive":
+                sendImAliveResponse();
+                System.out.println("MQQT> Received command 'command_is_raspberry_alive'");
+                break;
+            default:
+        }
+    }
+
+    private static void sendImAliveResponse() {
+        publishCommand("raspberry_pi_im_alive");
     }
 
     private static void connectMqtt() {
@@ -83,7 +98,7 @@ public class MainApplication {
             public void onSuccess(byte[] qoses) {
                 // The result of the subcribe request.
                 System.out.println("MQQT> Subscribed succesfully to topic tcc_light_control_infnet");
-                publishImAlive();
+                publishCommand("raspberry_pi_im_alive");
             }
 
             public void onFailure(Throwable value) {
@@ -92,12 +107,12 @@ public class MainApplication {
         });
     }
 
-    private static void publishImAlive() {
+    private static void publishCommand(String command) {
         // Send a message to a topic
-        connection.publish("tcc_light_control_infnet", "raspberry_pi_im_alive".getBytes(), QoS.AT_LEAST_ONCE, false, new Callback<Void>() {
+        connection.publish("tcc_light_control_infnet", command.getBytes(), QoS.AT_LEAST_ONCE, false, new Callback<Void>() {
             public void onSuccess(Void v) {
                 // the pubish operation completed successfully.
-                System.out.println("MQQT> Published to topic.");
+                System.out.println("MQQT> Sent command '" + command + "'");
             }
 
             public void onFailure(Throwable value) {
