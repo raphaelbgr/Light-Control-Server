@@ -1,0 +1,222 @@
+{
+  "payload":{
+    "id": 1,
+    "name":"Condomínio Pedra do Sol",
+    "type":"condominio",
+    "address":{
+      "street":"Rua Sebastião Lacerda",
+      "number":"30",
+      "district":"Laranjeiras",
+      "city":"Rio de Janeiro",
+      "state":"RJ",
+      "zip":"22240-110",
+      "country":"Brazil",
+      "phone":"+55 21 2265-1758"
+    },
+    "blocks":[
+      {
+        "number":1,
+        "name":"Bloco 1",
+        "apartments":28,
+        "floors":[
+          {
+            "number":1,
+            "name":"Térreo",
+            "controlled_lights":[
+              {
+                "id":1,
+                "area":"Portaria R. Seb. Lacerda",
+                "type":"reception",
+                "connection":"online",
+                "state":1,
+                "stragegy":"economy"
+              },
+              {
+                "id":2,
+                "area":"Portaria R. Condé de Avelar",
+                "type":"reception",
+                "connection":"online",
+                "state":1,
+                "stragegy":"scheduled"
+              }
+            ]
+          },
+          {
+            "number":2,
+            "name":"Playground",
+            "controlled_lights":[
+              {
+                "id":1,
+                "area":"Playground Bloco 1",
+                "type":"park",
+                "connection":"online",
+                "state":0,
+                "stragegy":"manual"
+              },
+              {
+                "id":3,
+                "area":"Garagem G2",
+                "type":"parking",
+                "connection":"online",
+                "state":0,
+                "stragegy":"manual"
+              },
+              {
+                "id":4,
+                "area":"Piscina Semi-Olímpica",
+                "type":"pool",
+                "connection":"online",
+                "state":0,
+                "stragegy":"scheduled",
+                "schedule":{
+                  "mon":[
+                    {
+                      "set":1,
+                      "time":"18:00:00-03:00"
+                    },
+                    {
+                      "set":0,
+                      "time":"03:00:00-03:00"
+                    }
+                  ],
+                  "tue":[
+                    {
+                      "set":1,
+                      "time":"18:00:00-03:00"
+                    },
+                    {
+                      "set":0,
+                      "time":"03:00:00-03:00"
+                    }
+                  ],
+                  "wed":[
+                    {
+                      "set":1,
+                      "time":"18:00:00-03:00"
+                    },
+                    {
+                      "set":0,
+                      "time":"03:00:00-03:00"
+                    }
+                  ],
+                  "thu":[
+                    {
+                      "set":1,
+                      "time":"18:00:00-03:00"
+                    },
+                    {
+                      "set":0,
+                      "time":"03:00:00-03:00"
+                    }
+                  ],
+                  "fri":[
+                    {
+                      "set":1,
+                      "time":"18:00:00-03:00"
+                    },
+                    {
+                      "set":0,
+                      "time":"03:00:00-03:00"
+                    }
+                  ],
+                  "sat":[
+                    {
+                      "set":1,
+                      "time":"18:00:00-03:00"
+                    },
+                    {
+                      "set":0,
+                      "time":"03:00:00-03:00"
+                    }
+                  ],
+                  "sun":[
+                    {
+                      "set":1,
+                      "time":"18:00:00-03:00"
+                    },
+                    {
+                      "set":0,
+                      "time":"03:00:00-03:00"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "number":3,
+            "name":"Garagem G3",
+            "controlled_lights":[
+              {
+                "id":1,
+                "area":"Luz do hall de garagem",
+                "type":"hall",
+                "connection":"online",
+                "state":0,
+                "stragegy":"manual"
+              },
+              {
+                "id":3,
+                "area":"Garagem G3",
+                "type":"parking",
+                "connection":"online",
+                "state":0,
+                "stragegy":"manual"
+              }
+            ]
+          },
+          {
+            "number":4,
+            "name":"Garagem G4",
+            "controlled_lights":[
+              {
+                "id":1,
+                "area":"Luz do hall de garagem",
+                "type":"hall",
+                "connection":"online",
+                "state":0,
+                "stragegy":"manual"
+              },
+              {
+                "id":3,
+                "area":"Garagem G4",
+                "type":"parking",
+                "connection":"online",
+                "state":0,
+                "stragegy":"manual"
+              }
+            ]
+          },
+          {
+            "number":5,
+            "name":"5º andar",
+            "controlled_lights":[
+              {
+                "id":1,
+                "area":"Luz do hall de apartamentos",
+                "type":"hall",
+                "connection":"online",
+                "state":0,
+                "stragegy":"manual"
+              }
+            ]
+          },
+          {
+            "number":6,
+            "name":"6º andar",
+            "controlled_lights":[
+              {
+                "id":1,
+                "area":"Luz do hall de apartamentos",
+                "type":"hall",
+                "connection":"online",
+                "state":0,
+                "stragegy":"manual"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

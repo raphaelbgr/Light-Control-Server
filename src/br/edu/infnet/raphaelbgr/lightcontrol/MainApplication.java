@@ -5,6 +5,7 @@ import org.fusesource.hawtbuf.UTF8Buffer;
 import org.fusesource.mqtt.client.*;
 
 import java.net.URISyntaxException;
+import java.util.Scanner;
 
 public class MainApplication {
 
@@ -44,12 +45,12 @@ public class MainApplication {
         connection.listener(new Listener() {
             @Override
             public void onConnected() {
-                System.out.println("MQQT> Connected to iot.eclipse.org!");
+                System.out.println("SERVER> Connected to iot.eclipse.org!");
             }
 
             @Override
             public void onDisconnected() {
-                System.out.println("MQQT> Disconnected socket...");
+                System.out.println("SERVER> Disconnected socket...");
             }
 
             @Override
@@ -60,7 +61,7 @@ public class MainApplication {
 
             @Override
             public void onFailure(Throwable throwable) {
-                System.out.println("MQQT> Failure on socket...");
+                System.out.println("SERVER> Failure on socket...");
             }
         });
     }
@@ -69,10 +70,24 @@ public class MainApplication {
         switch (command) {
             case "command_is_raspberry_alive":
                 sendImAliveResponse();
-                System.out.println("MQQT> Received command 'command_is_raspberry_alive'");
+                System.out.println("SERVER> Received command 'command_is_raspberry_alive'");
+                break;
+            case "fetch_building_id_1":
+                sendBuildingData(1);
+                System.out.println("SERVER> Received command 'command_is_raspberry_alive'");
                 break;
             default:
+                System.out.println("MQQT> '" + command + "'");
         }
+    }
+
+    private static void sendBuildingData(int id) {
+        String data = new Scanner(MainApplication.class.getClassLoader().getResourceAsStream("building_1_initial_state.json"), "UTF-8").useDelimiter("\\A").next();
+        publishCommand("fetch_building_id_response" + data);
+    }
+
+    private static void sendFetchBuildingError() {
+        publishCommand("fetch_building_error");
     }
 
     private static void sendImAliveResponse() {
@@ -82,11 +97,11 @@ public class MainApplication {
     private static void connectMqtt() {
         connection.connect(new Callback<Void>() {
             public void onFailure(Throwable value) {
-                System.out.println("MQQT> Socket breakdown...");
+                System.out.println("SERVER> Socket breakdown...");
             }
 
             public void onSuccess(Void v) {
-                System.out.println("MQQT> Connected socket!");
+                System.out.println("SERVER> Connected socket!");
                 subscribeToTopic();
             }
         });
@@ -97,12 +112,12 @@ public class MainApplication {
         connection.subscribe(topics, new Callback<byte[]>() {
             public void onSuccess(byte[] qoses) {
                 // The result of the subcribe request.
-                System.out.println("MQQT> Subscribed succesfully to topic tcc_light_control_infnet");
+                System.out.println("SERVER> Subscribed succesfully to topic tcc_light_control_infnet");
                 publishCommand("raspberry_pi_im_alive");
             }
 
             public void onFailure(Throwable value) {
-                System.out.println("MQQT> Failure to subscribe on topic.");
+                System.out.println("SERVER> Failure to subscribe on topic.");
             }
         });
     }
@@ -112,11 +127,11 @@ public class MainApplication {
         connection.publish("tcc_light_control_infnet", command.getBytes(), QoS.AT_LEAST_ONCE, false, new Callback<Void>() {
             public void onSuccess(Void v) {
                 // the pubish operation completed successfully.
-                System.out.println("MQQT> Sent command '" + command + "'");
+                System.out.println("SERVER> Sent command '" + command + "'");
             }
 
             public void onFailure(Throwable value) {
-                System.out.println("MQQT> Failure to publish on topic.");
+                System.out.println("SERVER> Failure to publish on topic.");
             }
         });
     }
@@ -126,7 +141,7 @@ public class MainApplication {
         connection.disconnect(new Callback<Void>() {
             public void onSuccess(Void v) {
                 // called once the connection is disconnected.
-                System.out.println("MQQT> Disconnected.");
+                System.out.println("SERVER> Disconnected.");
             }
 
             public void onFailure(Throwable value) {
