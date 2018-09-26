@@ -24,7 +24,7 @@
             "name":"Térreo",
             "controlled_lights":[
               {
-                "id":1,
+                "id":"091fe207-f208-4eda-b985-e2d303aacfc9",
                 "area":"Portaria R. Seb. Lacerda",
                 "type":"reception",
                 "connection":"online",
@@ -32,7 +32,7 @@
                 "stragegy":"economy"
               },
               {
-                "id":2,
+                "id":"2677004c-0316-4ef9-9ce5-3ca0c6524a14",
                 "area":"Portaria R. Condé de Avelar",
                 "type":"reception",
                 "connection":"online",
@@ -46,7 +46,7 @@
             "name":"Playground",
             "controlled_lights":[
               {
-                "id":1,
+                "id":"9bb5c405-e94b-478c-b40b-0cf8c5efc3a8",
                 "area":"Playground Bloco 1",
                 "type":"park",
                 "connection":"online",
@@ -54,7 +54,7 @@
                 "stragegy":"manual"
               },
               {
-                "id":3,
+                "id":"37cea9b8-2185-449a-becb-fd8e357c6f2a",
                 "area":"Garagem G2",
                 "type":"parking",
                 "connection":"online",
@@ -62,7 +62,7 @@
                 "stragegy":"manual"
               },
               {
-                "id":4,
+                "id":"ee1db8ac-6222-4da1-9a8e-0c20eeafb500",
                 "area":"Piscina Semi-Olímpica",
                 "type":"pool",
                 "connection":"online",
@@ -148,7 +148,7 @@
             "name":"Garagem G3",
             "controlled_lights":[
               {
-                "id":1,
+                "id":"2023b8b7-b133-4ad0-989a-03a2b2b2b6b2",
                 "area":"Luz do hall de garagem",
                 "type":"hall",
                 "connection":"online",
@@ -156,7 +156,7 @@
                 "stragegy":"manual"
               },
               {
-                "id":3,
+                "id":"688c2e7e-26b3-47df-b07b-81ce9858f37a",
                 "area":"Garagem G3",
                 "type":"parking",
                 "connection":"online",
@@ -170,7 +170,7 @@
             "name":"Garagem G4",
             "controlled_lights":[
               {
-                "id":1,
+                "id":"43e474db-c8c7-47d3-b479-14b5a39e80bb",
                 "area":"Luz do hall de garagem",
                 "type":"hall",
                 "connection":"online",
@@ -178,7 +178,7 @@
                 "stragegy":"manual"
               },
               {
-                "id":3,
+                "id":"8a4bac52-11ec-4842-aa8e-9e863b649615",
                 "area":"Garagem G4",
                 "type":"parking",
                 "connection":"online",
@@ -192,7 +192,7 @@
             "name":"5º andar",
             "controlled_lights":[
               {
-                "id":1,
+                "id":"3fe6fcb4-1314-4fb0-a15b-2f8c77b16ac0",
                 "area":"Luz do hall de apartamentos",
                 "type":"hall",
                 "connection":"online",
@@ -206,7 +206,7 @@
             "name":"6º andar",
             "controlled_lights":[
               {
-                "id":1,
+                "id":"8880d0b5-0d97-4974-98e9-450de291aec4",
                 "area":"Luz do hall de apartamentos",
                 "type":"hall",
                 "connection":"online",

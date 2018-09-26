@@ -8,7 +8,7 @@ public class Controlled_light {
 
     @SerializedName("id")
     @Expose
-    private Integer id;
+    private String id;
     @SerializedName("area")
     @Expose
     private String area;
@@ -28,15 +28,15 @@ public class Controlled_light {
     @Expose
     private Schedule schedule;
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public Controlled_light withId(Integer id) {
+    public Controlled_light withId(String id) {
         this.id = id;
         return this;
     }
