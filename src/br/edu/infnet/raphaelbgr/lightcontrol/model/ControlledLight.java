@@ -4,7 +4,7 @@ package br.edu.infnet.raphaelbgr.lightcontrol.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Controlled_light {
+public class ControlledLight {
 
     @SerializedName("id")
     @Expose
@@ -36,7 +36,7 @@ public class Controlled_light {
         this.id = id;
     }
 
-    public Controlled_light withId(String id) {
+    public ControlledLight withId(String id) {
         this.id = id;
         return this;
     }
@@ -49,7 +49,7 @@ public class Controlled_light {
         this.area = area;
     }
 
-    public Controlled_light withArea(String area) {
+    public ControlledLight withArea(String area) {
         this.area = area;
         return this;
     }
@@ -62,7 +62,7 @@ public class Controlled_light {
         this.type = type;
     }
 
-    public Controlled_light withType(String type) {
+    public ControlledLight withType(String type) {
         this.type = type;
         return this;
     }
@@ -75,7 +75,7 @@ public class Controlled_light {
         this.connection = connection;
     }
 
-    public Controlled_light withConnection(String connection) {
+    public ControlledLight withConnection(String connection) {
         this.connection = connection;
         return this;
     }
@@ -88,7 +88,7 @@ public class Controlled_light {
         this.state = state;
     }
 
-    public Controlled_light withState(Integer state) {
+    public ControlledLight withState(Integer state) {
         this.state = state;
         return this;
     }
@@ -101,7 +101,7 @@ public class Controlled_light {
         this.stragegy = stragegy;
     }
 
-    public Controlled_light withStragegy(String stragegy) {
+    public ControlledLight withStragegy(String stragegy) {
         this.stragegy = stragegy;
         return this;
     }
@@ -114,7 +114,7 @@ public class Controlled_light {
         this.schedule = schedule;
     }
 
-    public Controlled_light withSchedule(Schedule schedule) {
+    public ControlledLight withSchedule(Schedule schedule) {
         this.schedule = schedule;
         return this;
     }

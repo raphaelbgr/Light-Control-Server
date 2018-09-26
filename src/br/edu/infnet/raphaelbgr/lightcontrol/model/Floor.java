@@ -1,10 +1,11 @@
 
 package br.edu.infnet.raphaelbgr.lightcontrol.model;
 
-import java.util.ArrayList;
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Floor {
 
@@ -16,7 +17,7 @@ public class Floor {
     private String name;
     @SerializedName("controlled_lights")
     @Expose
-    private List<Controlled_light> controlled_lights = new ArrayList<Controlled_light>();
+    private List<ControlledLight> controlled_lights = new ArrayList<ControlledLight>();
 
     public Integer getNumber() {
         return number;
@@ -44,15 +45,15 @@ public class Floor {
         return this;
     }
 
-    public List<Controlled_light> getControlled_lights() {
+    public List<ControlledLight> getControlledLights() {
         return controlled_lights;
     }
 
-    public void setControlled_lights(List<Controlled_light> controlled_lights) {
+    public void setControlled_lights(List<ControlledLight> controlled_lights) {
         this.controlled_lights = controlled_lights;
     }
 
-    public Floor withControlled_lights(List<Controlled_light> controlled_lights) {
+    public Floor withControlled_lights(List<ControlledLight> controlled_lights) {
         this.controlled_lights = controlled_lights;
         return this;
     }

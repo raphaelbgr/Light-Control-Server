@@ -1,5 +1,10 @@
 package br.edu.infnet.raphaelbgr.lightcontrol;
 
+import br.edu.infnet.raphaelbgr.lightcontrol.model.Block;
+import br.edu.infnet.raphaelbgr.lightcontrol.model.ControlledLight;
+import br.edu.infnet.raphaelbgr.lightcontrol.model.Floor;
+import br.edu.infnet.raphaelbgr.lightcontrol.model.MainDataSet;
+import com.google.gson.Gson;
 import org.fusesource.hawtbuf.Buffer;
 import org.fusesource.hawtbuf.UTF8Buffer;
 import org.fusesource.mqtt.client.*;
@@ -11,14 +16,21 @@ public class MainApplication {
 
     private static MQTT mqtt = new MQTT();
     private static CallbackConnection connection;
+    private static MainDataSet mainDataSet;
 
     public static void main(String[] args) {
         System.out.println("Server> Program start...");
+        initMainDataSet();
         setupMqttClient();
         createMqttCallbackConnection();
         connectMqtt();
 
         slowDownPolicy();
+    }
+
+    private static void initMainDataSet() {
+        String data = new Scanner(MainApplication.class.getClassLoader().getResourceAsStream("building_1_initial_state.json"), "UTF-8").useDelimiter("\\A").next();
+        mainDataSet = new Gson().fromJson(data, MainDataSet.class);
     }
 
     private static void slowDownPolicy() {
@@ -56,7 +68,7 @@ public class MainApplication {
             @Override
             public void onPublish(UTF8Buffer utf8Buffer, Buffer buffer, Runnable runnable) {
                 runnable.run();
-                processCommand(buffer.ascii().toString());
+                processCommand(buffer.utf8().toString());
             }
 
             @Override
@@ -74,15 +86,64 @@ public class MainApplication {
                 break;
             case "fetch_building_id_1":
                 sendBuildingData(1);
-                System.out.println("SERVER> Received command 'command_is_raspberry_alive'");
+                System.out.println("SERVER> Received command 'fetch_building_id_1'");
                 break;
             default:
-                System.out.println("MQQT> '" + command + "'");
+                if (command.contains("command_turn_light_on_id")) {
+                    System.out.println("SERVER> Received command 'command_turn_light_on'");
+                    turnOnLightForId(command.replace("command_turn_light_on_id_", ""));
+                    break;
+                }
+                if (command.contains("command_turn_light_off_id")) {
+                    System.out.println("SERVER> Received command 'command_turn_light_off'");
+                    turnOffLightForId(command.replace("command_turn_light_off_id_", ""));
+                    break;
+                }
         }
     }
 
+    private synchronized static void turnOnLightForId(String id) {
+        for (Block block : mainDataSet.payload.getBlocks()) {
+            for (Floor floor : block.getFloors()) {
+                for (ControlledLight controlledLight : floor.getControlledLights()) {
+                    if (id.contains(controlledLight.getId())) {
+                        if (controlledLight.getState() == 1) {
+                            break;
+                        } else {
+                            controlledLight.setState(1);
+                            publishCommand("server_message_" + "Luz ligada para " + controlledLight.getArea());
+                            sendBuildingData(1);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        System.out.println("SERVER> No light found for id '" + id + "1");
+    }
+
+    private synchronized static void turnOffLightForId(String id) {
+        for (Block block : mainDataSet.payload.getBlocks()) {
+            for (Floor floor : block.getFloors()) {
+                for (ControlledLight controlledLight : floor.getControlledLights()) {
+                    if (id.contains(controlledLight.getId())) {
+                        if (controlledLight.getState() == 0) {
+                            break;
+                        } else {
+                            controlledLight.setState(0);
+                            publishCommand("server_message_" + "Luz desligada para " + controlledLight.getArea());
+                            sendBuildingData(1);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        System.out.println("SERVER> No light found for id '" + id + "1");
+    }
+
     private static void sendBuildingData(int id) {
-        String data = new Scanner(MainApplication.class.getClassLoader().getResourceAsStream("building_1_initial_state.json"), "UTF-8").useDelimiter("\\A").next();
+        String data = new Gson().toJson(mainDataSet, MainDataSet.class);
         publishCommand("fetch_building_id_response" + data);
     }
 
