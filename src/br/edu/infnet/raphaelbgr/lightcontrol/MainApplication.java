@@ -1,9 +1,6 @@
 package br.edu.infnet.raphaelbgr.lightcontrol;
 
-import br.edu.infnet.raphaelbgr.lightcontrol.model.Block;
-import br.edu.infnet.raphaelbgr.lightcontrol.model.ControlledLight;
-import br.edu.infnet.raphaelbgr.lightcontrol.model.Floor;
-import br.edu.infnet.raphaelbgr.lightcontrol.model.MainDataSet;
+import br.edu.infnet.raphaelbgr.lightcontrol.model.*;
 import com.google.gson.Gson;
 import com.pi4j.io.gpio.*;
 import org.fusesource.hawtbuf.Buffer;
@@ -24,6 +21,7 @@ public class MainApplication {
     private static final HashMap<String, GpioPinDigitalOutput> gpioMap = new HashMap();
     private static List<String> idList;
     private static QoS qos = QoS.AT_LEAST_ONCE;
+    private static boolean emulatedMode;
 
     public static void main(String[] args) {
         System.out.println("Server> Program start...");
@@ -38,31 +36,48 @@ public class MainApplication {
 
     private static void initGpio() {
         // wPI ports
-        gpio = GpioFactory.getInstance();
-        GpioPinDigitalOutput pin0 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_08, "MyLED_0", PinState.HIGH);
-        GpioPinDigitalOutput pin1 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_09, "MyLED_1", PinState.HIGH);
-        GpioPinDigitalOutput pin2 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_07, "MyLED_2", PinState.LOW);
-        GpioPinDigitalOutput pin3 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00, "MyLED_3", PinState.LOW);
-        GpioPinDigitalOutput pin4 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02, "MyLED_4", PinState.LOW);
-        GpioPinDigitalOutput pin5 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "MyLED_5", PinState.LOW);
-        GpioPinDigitalOutput pin6 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_12, "MyLED_6", PinState.LOW);
-        GpioPinDigitalOutput pin7 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_13, "MyLED_7", PinState.LOW);
-        GpioPinDigitalOutput pin8 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_14, "MyLED_8", PinState.LOW);
-        GpioPinDigitalOutput pin9 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_30, "MyLED_9", PinState.LOW);
-        GpioPinDigitalOutput pin10 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_21, "MyLED_10", PinState.LOW);
-        gpioMap.put(idList.get(0), pin0);
-        gpioMap.put(idList.get(1), pin1);
-        gpioMap.put(idList.get(2), pin2);
-        gpioMap.put(idList.get(3), pin3);
-        gpioMap.put(idList.get(4), pin4);
-        gpioMap.put(idList.get(5), pin5);
-        gpioMap.put(idList.get(6), pin6);
-        gpioMap.put(idList.get(7), pin7);
-        gpioMap.put(idList.get(8), pin8);
-        gpioMap.put(idList.get(9), pin9);
-        gpioMap.put(idList.get(10), pin10);
-        for (Map.Entry<String, GpioPinDigitalOutput> item : gpioMap.entrySet()) {
-            item.getValue().setMode(PinMode.DIGITAL_OUTPUT);
+        if (Raspberry.isPi()) {
+            gpio = GpioFactory.getInstance();
+            GpioPinDigitalOutput pin0 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_08, "MyLED_0", PinState.HIGH);
+            GpioPinDigitalOutput pin1 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_09, "MyLED_1", PinState.HIGH);
+            GpioPinDigitalOutput pin2 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_07, "MyLED_2", PinState.LOW);
+            GpioPinDigitalOutput pin3 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00, "MyLED_3", PinState.LOW);
+            GpioPinDigitalOutput pin4 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02, "MyLED_4", PinState.LOW);
+            GpioPinDigitalOutput pin5 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "MyLED_5", PinState.LOW);
+            GpioPinDigitalOutput pin6 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_12, "MyLED_6", PinState.LOW);
+            GpioPinDigitalOutput pin7 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_13, "MyLED_7", PinState.LOW);
+            GpioPinDigitalOutput pin8 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_14, "MyLED_8", PinState.LOW);
+            GpioPinDigitalOutput pin9 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_30, "MyLED_9", PinState.LOW);
+            GpioPinDigitalOutput pin10 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_21, "MyLED_10", PinState.LOW);
+            gpioMap.put(idList.get(0), pin0);
+            gpioMap.put(idList.get(1), pin1);
+            gpioMap.put(idList.get(2), pin2);
+            gpioMap.put(idList.get(3), pin3);
+            gpioMap.put(idList.get(4), pin4);
+            gpioMap.put(idList.get(5), pin5);
+            gpioMap.put(idList.get(6), pin6);
+            gpioMap.put(idList.get(7), pin7);
+            gpioMap.put(idList.get(8), pin8);
+            gpioMap.put(idList.get(9), pin9);
+            gpioMap.put(idList.get(10), pin10);
+            for (Map.Entry<String, GpioPinDigitalOutput> item : gpioMap.entrySet()) {
+                item.getValue().setMode(PinMode.DIGITAL_OUTPUT);
+            }
+        } else {
+            System.out.println("Server> Program not running on a RaspBerryPi, using PIN emulated mode!");
+            emulatedMode = true;
+            gpio = new FakeGpioController();
+            gpioMap.put(idList.get(0), new FakeGpioPinDigitalOutput());
+            gpioMap.put(idList.get(1), new FakeGpioPinDigitalOutput());
+            gpioMap.put(idList.get(2), new FakeGpioPinDigitalOutput());
+            gpioMap.put(idList.get(3), new FakeGpioPinDigitalOutput());
+            gpioMap.put(idList.get(4), new FakeGpioPinDigitalOutput());
+            gpioMap.put(idList.get(5), new FakeGpioPinDigitalOutput());
+            gpioMap.put(idList.get(6), new FakeGpioPinDigitalOutput());
+            gpioMap.put(idList.get(7), new FakeGpioPinDigitalOutput());
+            gpioMap.put(idList.get(8), new FakeGpioPinDigitalOutput());
+            gpioMap.put(idList.get(9), new FakeGpioPinDigitalOutput());
+            gpioMap.put(idList.get(10), new FakeGpioPinDigitalOutput());
         }
     }
 
@@ -75,7 +90,7 @@ public class MainApplication {
     private static void slowDownPolicy() {
         while (true) {
             try {
-                Thread.sleep(1000);
+                Thread.sleep(150);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
