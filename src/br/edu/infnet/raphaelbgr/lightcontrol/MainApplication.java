@@ -67,17 +67,17 @@ public class MainApplication {
             System.out.println("Server> Program not running on a RaspBerryPi, using PIN emulated mode!");
             emulatedMode = true;
             gpio = new FakeGpioController();
-            gpioMap.put(idList.get(0), new FakeGpioPinDigitalOutput());
-            gpioMap.put(idList.get(1), new FakeGpioPinDigitalOutput());
-            gpioMap.put(idList.get(2), new FakeGpioPinDigitalOutput());
-            gpioMap.put(idList.get(3), new FakeGpioPinDigitalOutput());
-            gpioMap.put(idList.get(4), new FakeGpioPinDigitalOutput());
-            gpioMap.put(idList.get(5), new FakeGpioPinDigitalOutput());
-            gpioMap.put(idList.get(6), new FakeGpioPinDigitalOutput());
-            gpioMap.put(idList.get(7), new FakeGpioPinDigitalOutput());
-            gpioMap.put(idList.get(8), new FakeGpioPinDigitalOutput());
-            gpioMap.put(idList.get(9), new FakeGpioPinDigitalOutput());
-            gpioMap.put(idList.get(10), new FakeGpioPinDigitalOutput());
+            gpioMap.put(idList.get(0), new FakeGpioPinDigitalOutput("MyLED_0"));
+            gpioMap.put(idList.get(1), new FakeGpioPinDigitalOutput("MyLED_1"));
+            gpioMap.put(idList.get(2), new FakeGpioPinDigitalOutput("MyLED_2"));
+            gpioMap.put(idList.get(3), new FakeGpioPinDigitalOutput("MyLED_3"));
+            gpioMap.put(idList.get(4), new FakeGpioPinDigitalOutput("MyLED_4"));
+            gpioMap.put(idList.get(5), new FakeGpioPinDigitalOutput("MyLED_5"));
+            gpioMap.put(idList.get(6), new FakeGpioPinDigitalOutput("MyLED_6"));
+            gpioMap.put(idList.get(7), new FakeGpioPinDigitalOutput("MyLED_7"));
+            gpioMap.put(idList.get(8), new FakeGpioPinDigitalOutput("MyLED_8"));
+            gpioMap.put(idList.get(9), new FakeGpioPinDigitalOutput("MyLED_9"));
+            gpioMap.put(idList.get(10), new FakeGpioPinDigitalOutput("MyLED_10"));
         }
     }
 

@@ -10,6 +10,12 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
 public class FakeGpioPinDigitalOutput implements GpioPinDigitalOutput {
+    private final String pinName;
+
+    public FakeGpioPinDigitalOutput(String pinName) {
+        this.pinName = pinName;
+    }
+
     @Override
     public void high() {
 
@@ -132,7 +138,7 @@ public class FakeGpioPinDigitalOutput implements GpioPinDigitalOutput {
 
     @Override
     public String getName() {
-        return null;
+        return pinName;
     }
 
     @Override
