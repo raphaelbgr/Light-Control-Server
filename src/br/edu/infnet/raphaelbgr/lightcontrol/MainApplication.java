@@ -23,8 +23,11 @@ public class MainApplication {
     private static QoS qos = QoS.AT_LEAST_ONCE;
     private static boolean emulatedMode;
 
+    private static String HOST = "tcp://mqtt.eclipse.org:1883";
+
     public static void main(String[] args) {
-        System.out.println("Server> Program start...");
+
+        System.out.println("SERVER> Program start...");
         initMainDataSet();
         initGpio();
         setupMqttClient();
@@ -64,7 +67,7 @@ public class MainApplication {
                 item.getValue().setMode(PinMode.DIGITAL_OUTPUT);
             }
         } else {
-            System.out.println("Server> Program not running on a RaspBerryPi, using PIN emulated mode!");
+            System.out.println("SERVER> Program not running on a RaspBerryPi, using PIN emulated mode!");
             emulatedMode = true;
             gpio = new FakeGpioController();
             gpioMap.put(idList.get(0), new FakeGpioPinDigitalOutput("MyLED_0"));
@@ -99,7 +102,7 @@ public class MainApplication {
 
     private static void setupMqttClient() {
         try {
-            mqtt.setHost("tcp://iot.eclipse.org:1883");
+            mqtt.setHost(HOST);
             mqtt.setWillQos(QoS.AT_LEAST_ONCE);
             connection = mqtt.callbackConnection();
         } catch (URISyntaxException e) {
@@ -111,7 +114,7 @@ public class MainApplication {
         connection.listener(new Listener() {
             @Override
             public void onConnected() {
-                System.out.println("SERVER> Connected to iot.eclipse.org!");
+                System.out.println("SERVER> Connected to " + HOST);
             }
 
             @Override
@@ -232,9 +235,11 @@ public class MainApplication {
     }
 
     private static void connectMqtt() {
+        System.out.println("SERVER> Connecting to MQTT server...");
         connection.connect(new Callback<Void>() {
             public void onFailure(Throwable value) {
                 System.out.println("SERVER> Socket breakdown...");
+                connectMqtt();
             }
 
             public void onSuccess(Void v) {
