@@ -177,7 +177,7 @@ public class MainApplication {
                         } else {
                             System.out.println("SERVER> GPIO not found.");
                         }
-                        break;
+                        return;
                     }
                 }
             }

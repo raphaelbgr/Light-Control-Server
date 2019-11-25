@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 public class FakeGpioPinDigitalOutput implements GpioPinDigitalOutput {
     private final String pinName;
@@ -37,7 +38,17 @@ public class FakeGpioPinDigitalOutput implements GpioPinDigitalOutput {
     }
 
     @Override
+    public Future<?> blink(long l, TimeUnit timeUnit) {
+        return null;
+    }
+
+    @Override
     public Future<?> blink(long delay, PinState blinkState) {
+        return null;
+    }
+
+    @Override
+    public Future<?> blink(long l, PinState pinState, TimeUnit timeUnit) {
         return null;
     }
 
@@ -47,7 +58,17 @@ public class FakeGpioPinDigitalOutput implements GpioPinDigitalOutput {
     }
 
     @Override
+    public Future<?> blink(long l, long l1, TimeUnit timeUnit) {
+        return null;
+    }
+
+    @Override
     public Future<?> blink(long delay, long duration, PinState blinkState) {
+        return null;
+    }
+
+    @Override
+    public Future<?> blink(long l, long l1, PinState pinState, TimeUnit timeUnit) {
         return null;
     }
 
@@ -57,7 +78,17 @@ public class FakeGpioPinDigitalOutput implements GpioPinDigitalOutput {
     }
 
     @Override
+    public Future<?> pulse(long l, TimeUnit timeUnit) {
+        return null;
+    }
+
+    @Override
     public Future<?> pulse(long duration, Callable<Void> callback) {
+        return null;
+    }
+
+    @Override
+    public Future<?> pulse(long l, Callable<Void> callable, TimeUnit timeUnit) {
         return null;
     }
 
@@ -67,7 +98,17 @@ public class FakeGpioPinDigitalOutput implements GpioPinDigitalOutput {
     }
 
     @Override
+    public Future<?> pulse(long l, boolean b, TimeUnit timeUnit) {
+        return null;
+    }
+
+    @Override
     public Future<?> pulse(long duration, boolean blocking, Callable<Void> callback) {
+        return null;
+    }
+
+    @Override
+    public Future<?> pulse(long l, boolean b, Callable<Void> callable, TimeUnit timeUnit) {
         return null;
     }
 
@@ -77,7 +118,17 @@ public class FakeGpioPinDigitalOutput implements GpioPinDigitalOutput {
     }
 
     @Override
+    public Future<?> pulse(long l, PinState pinState, TimeUnit timeUnit) {
+        return null;
+    }
+
+    @Override
     public Future<?> pulse(long duration, PinState pulseState, Callable<Void> callback) {
+        return null;
+    }
+
+    @Override
+    public Future<?> pulse(long l, PinState pinState, Callable<Void> callable, TimeUnit timeUnit) {
         return null;
     }
 
@@ -87,7 +138,17 @@ public class FakeGpioPinDigitalOutput implements GpioPinDigitalOutput {
     }
 
     @Override
+    public Future<?> pulse(long l, PinState pinState, boolean b, TimeUnit timeUnit) {
+        return null;
+    }
+
+    @Override
     public Future<?> pulse(long duration, PinState pulseState, boolean blocking, Callable<Void> callback) {
+        return null;
+    }
+
+    @Override
+    public Future<?> pulse(long l, PinState pinState, boolean b, Callable<Void> callable, TimeUnit timeUnit) {
         return null;
     }
 
