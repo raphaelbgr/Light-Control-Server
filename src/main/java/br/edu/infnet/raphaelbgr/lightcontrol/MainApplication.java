@@ -1,6 +1,7 @@
 package br.edu.infnet.raphaelbgr.lightcontrol;
 
 import br.edu.infnet.raphaelbgr.lightcontrol.model.*;
+import br.edu.infnet.raphaelbgr.lightcontrol.util.Util;
 import com.google.gson.Gson;
 import com.pi4j.io.gpio.*;
 import org.fusesource.hawtbuf.Buffer;
@@ -33,8 +34,46 @@ public class MainApplication {
         setupMqttClient();
         createMqttCallbackConnection();
         connectMqtt();
+        startConnectionReportChecker();
+    }
 
-        slowDownPolicy();
+    private static void startConnectionReportChecker() {
+        HashMap<String, GpioPinDigitalOutput> gpioMapCopy = new HashMap(gpioMap);
+        while (true) {
+            boolean hasInternet = Util.isReachableByPing("8.8.8.8");
+            boolean waitingForConnection = false;
+            if (!hasInternet)
+                System.out.println("SERVER> Internet conection down...");
+            while (!hasInternet) {
+                System.out.println("SERVER> Waiting for connection...");
+                waitingForConnection = true;
+                for (GpioPinDigitalOutput gpio : gpioMapCopy.values()) {
+                    gpio.setState(PinState.HIGH);
+                }
+                waitOneSec();
+                for (GpioPinDigitalOutput gpio : gpioMapCopy.values()) {
+                    gpio.setState(PinState.LOW);
+                }
+                waitOneSec();
+                hasInternet = Util.isReachableByPing("8.8.8.8");
+            }
+            if (waitingForConnection && hasInternet) {
+                // Restore pins state
+                for (GpioPinDigitalOutput gpio : gpioMap.values()) {
+                    gpio.setState(gpio.getState());
+                }
+                waitingForConnection = false;
+            }
+            waitOneSec();
+        }
+    }
+
+    private static void waitOneSec() {
+        try {
+            Thread.sleep(1000);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private static void initGpio() {
@@ -88,16 +127,6 @@ public class MainApplication {
         String data = new Scanner(MainApplication.class.getClassLoader().getResourceAsStream("building_1_initial_state.json"), "UTF-8").useDelimiter("\\A").next();
         mainDataSet = new Gson().fromJson(data, MainDataSet.class);
         idList = buildControlledLightList();
-    }
-
-    private static void slowDownPolicy() {
-        while (true) {
-            try {
-                Thread.sleep(150);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     private static void setupMqttClient() {
