@@ -38,12 +38,12 @@ public class Util {
             URLConnection connection = url.openConnection();
 
             if (connection.getContentLength() == -1) {
-                System.err.println("Failed to verify connection");
+                System.err.println("SERVER> URLConnection failed to host: " +  host);
                 return false;
             }
             return true;
         } catch (IOException e) {
-            System.err.println("Failed to open a connection");
+            System.err.println("SERVER> IOException to host: " +  host);
             e.printStackTrace();
             return false;
         }
