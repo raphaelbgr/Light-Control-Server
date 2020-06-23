@@ -28,7 +28,7 @@
                 "area":"Portaria R. Seb. Lacerda",
                 "type":"reception",
                 "connection":"online",
-                "state":1,
+                "state":0,
                 "stragegy":"economy"
               },
               {
@@ -36,7 +36,7 @@
                 "area":"Portaria R. Condé de Avelar",
                 "type":"reception",
                 "connection":"online",
-                "state":1,
+                "state":0,
                 "stragegy":"scheduled"
               }
             ]
