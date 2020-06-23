@@ -38,34 +38,36 @@ public class MainApplication {
     }
 
     private static void startConnectionReportChecker() {
-        HashMap<String, GpioPinDigitalOutput> gpioMapCopy = new HashMap(gpioMap);
         while (true) {
-            boolean hasInternet = Util.isReachableByPing("8.8.8.8");
-            boolean waitingForConnection = false;
+            boolean hasInternet = Util.isReachableByPing("8.8.8.8") || Util.isReachableByHttp("http://www.google.com");
             if (!hasInternet)
                 System.out.println("SERVER> Internet conection down...");
+
             while (!hasInternet) {
                 System.out.println("SERVER> Waiting for connection...");
-                waitingForConnection = true;
-                for (GpioPinDigitalOutput gpio : gpioMapCopy.values()) {
+                List<GpioPinDigitalOutput> offlineGpios = getOfflineGpios();
+                for (GpioPinDigitalOutput gpio : offlineGpios) {
                     gpio.setState(PinState.HIGH);
                 }
                 waitOneSec();
-                for (GpioPinDigitalOutput gpio : gpioMapCopy.values()) {
+                for (GpioPinDigitalOutput gpio : offlineGpios) {
                     gpio.setState(PinState.LOW);
                 }
                 waitOneSec();
                 hasInternet = Util.isReachableByPing("8.8.8.8");
             }
-            if (waitingForConnection && hasInternet) {
-                // Restore pins state
-                for (GpioPinDigitalOutput gpio : gpioMap.values()) {
-                    gpio.setState(gpio.getState());
-                }
-                waitingForConnection = false;
-            }
             waitOneSec();
         }
+    }
+
+    private static List<GpioPinDigitalOutput> getOfflineGpios() {
+        List<GpioPinDigitalOutput> offlineGpios = new ArrayList<>();
+        for (GpioPinDigitalOutput gpio : gpioMap.values()) {
+            if (gpio.getState() == PinState.LOW) {
+                offlineGpios.add(gpio);
+            }
+        }
+        return offlineGpios;
     }
 
     private static void waitOneSec() {
@@ -80,8 +82,8 @@ public class MainApplication {
         // wPI ports
         if (Raspberry.isPi()) {
             gpio = GpioFactory.getInstance();
-            GpioPinDigitalOutput pin0 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_08, "MyLED_0", PinState.HIGH);
-            GpioPinDigitalOutput pin1 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_09, "MyLED_1", PinState.HIGH);
+            GpioPinDigitalOutput pin0 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_08, "MyLED_0", PinState.LOW);
+            GpioPinDigitalOutput pin1 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_09, "MyLED_1", PinState.LOW);
             GpioPinDigitalOutput pin2 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_07, "MyLED_2", PinState.LOW);
             GpioPinDigitalOutput pin3 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00, "MyLED_3", PinState.LOW);
             GpioPinDigitalOutput pin4 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02, "MyLED_4", PinState.LOW);
