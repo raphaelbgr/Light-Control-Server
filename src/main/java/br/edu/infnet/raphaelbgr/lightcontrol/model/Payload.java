@@ -21,6 +21,9 @@ public class Payload {
     @SerializedName("address")
     @Expose
     private Address address;
+    @SerializedName("master_switch_state")
+    @Expose
+    private boolean masterSwitchState = true;
     @SerializedName("blocks")
     @Expose
     private List<Block> blocks = new ArrayList<Block>();
@@ -90,4 +93,11 @@ public class Payload {
         return this;
     }
 
+    public boolean isMasterSwitchState() {
+        return masterSwitchState;
+    }
+
+    public void setMasterSwitchState(boolean masterSwitchState) {
+        this.masterSwitchState = masterSwitchState;
+    }
 }

@@ -25,6 +25,7 @@ public class MainApplication {
     private static boolean emulatedMode;
 
     private static String HOST = "tcp://mqtt.eclipse.org:1883";
+    private static boolean masterSwitchOn = true;
 
     public static void main(String[] args) {
 
@@ -68,6 +69,14 @@ public class MainApplication {
             }
         }
         return offlineGpios;
+    }
+
+    private static List<GpioPinDigitalOutput> getAllGpios() {
+        List<GpioPinDigitalOutput> gpios = new ArrayList<>();
+        for (GpioPinDigitalOutput gpio : gpioMap.values()) {
+            gpios.add(gpio);
+        }
+        return gpios;
     }
 
     private static void waitOneSec() {
@@ -128,6 +137,7 @@ public class MainApplication {
     private static void initMainDataSet() {
         String data = new Scanner(MainApplication.class.getClassLoader().getResourceAsStream("building_1_initial_state.json"), "UTF-8").useDelimiter("\\A").next();
         mainDataSet = new Gson().fromJson(data, MainDataSet.class);
+        mainDataSet.payload.setMasterSwitchState(masterSwitchOn);
         idList = buildControlledLightList();
     }
 
@@ -178,16 +188,51 @@ public class MainApplication {
                 break;
             default:
                 if (command.contains("command_turn_light_on_id")) {
-                    System.out.println("SERVER> Received command 'command_turn_light_on'");
-                    turnOnLightForId(command.replace("command_turn_light_on_id_", ""));
+                    if (masterSwitchOn) {
+                        System.out.println("SERVER> Received command 'command_turn_light_on'");
+                        turnOnLightForId(command.replace("command_turn_light_on_id_", ""));
+                    } else {
+                        System.out.println("SERVER> Received command 'command_turn_light_on' but masterSwitch is: " + masterSwitchOn);
+                        publishCommand("server_message_" + "Recebida ordem de ligar o nó porém o interruptor mestre encontra-se desligado.");
+                    }
                     break;
                 }
                 if (command.contains("command_turn_light_off_id")) {
-                    System.out.println("SERVER> Received command 'command_turn_light_off'");
-                    turnOffLightForId(command.replace("command_turn_light_off_id_", ""));
+                    if (masterSwitchOn) {
+                        System.out.println("SERVER> Received command 'command_turn_light_off'");
+                        turnOffLightForId(command.replace("command_turn_light_off_id_", ""));
+                    } else {
+                        System.out.println("SERVER> Received command 'command_turn_light_off' but masterSwitch is: " + masterSwitchOn);
+                        publishCommand("server_message_" + "Recebida ordem de desligar o nó porém o interruptor mestre encontra-se desligado.");
+                    }
+                    break;
+                }
+                if (command.contains("command_turn_master_switch_on")) {
+                    System.out.println("SERVER> Received command 'command_turn_master_switch_on'");
+                    turnMasterSwitchOn();
+                    break;
+                }
+                if (command.contains("command_turn_master_switch_off")) {
+                    System.out.println("SERVER> Received command 'command_turn_master_switch_off'");
+                    turnMasterSwitchOff();
                     break;
                 }
         }
+    }
+
+    private static void turnMasterSwitchOn() {
+        masterSwitchOn = true;
+        mainDataSet.payload.setMasterSwitchState(true);
+        sendBuildingData(1);
+        publishCommand("server_message_" + "Interruptor mestre ativado!");
+    }
+
+    private static void turnMasterSwitchOff() {
+        masterSwitchOn = false;
+        mainDataSet.payload.setMasterSwitchState(false);
+        turnOffAllLights();
+        sendBuildingData(1);
+        publishCommand("server_message_" + "Interruptor mestre desativado e tódos os nós também.");
     }
 
     private synchronized static void turnOnLightForId(String id) {
@@ -234,6 +279,40 @@ public class MainApplication {
                             System.out.println("SERVER> GPIO not found.");
                         }
                         break;
+                    }
+                }
+            }
+        }
+    }
+
+    private synchronized static void turnOnAllLights() {
+        for (Block block : mainDataSet.payload.getBlocks()) {
+            for (Floor floor : block.getFloors()) {
+                for (ControlledLight controlledLight : floor.getControlledLights()) {
+                    if (controlledLight.getState() == 0) {
+                        controlledLight.setState(1);
+                    }
+                    if (gpio != null && gpioMap.containsKey(controlledLight.getId())) {
+                        gpioMap.get(controlledLight.getId()).setState(PinState.HIGH);
+                    } else {
+                        System.out.println("SERVER> GPIO not found: " + controlledLight.getId());
+                    }
+                }
+            }
+        }
+    }
+
+    private synchronized static void turnOffAllLights() {
+        for (Block block : mainDataSet.payload.getBlocks()) {
+            for (Floor floor : block.getFloors()) {
+                for (ControlledLight controlledLight : floor.getControlledLights()) {
+                    if (controlledLight.getState() != 0) {
+                        controlledLight.setState(0);
+                    }
+                    if (gpio != null && gpioMap.containsKey(controlledLight.getId())) {
+                        gpioMap.get(controlledLight.getId()).setState(PinState.LOW);
+                    } else {
+                        System.out.println("SERVER> GPIO not found: " + controlledLight.getId());
                     }
                 }
             }
